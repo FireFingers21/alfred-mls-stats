@@ -29,6 +29,7 @@ jq -cs \
     },
     "skipknowledge": true,
 	"items": (if (length != 0) then
+		(.[].tables | map({(.group): .entries[].position})) as $groupingSeqs |
 		map(.tables[] | .group as $group | .entries[] | {
 			"title": "\(.position)  \(.club)",
 			"subtitle": "Points: \(.points)    [ GP: \(.games_played)  W: \(.wins)  L: \(.losses)  T: \(.draws)      GF: \(.goals_scored)  GA: \(.goals_against)  GD: \(.goals_difference | (if . > 0 then "+"+(.|tostring) else . end)) ]",
@@ -43,8 +44,12 @@ jq -cs \
 			}
 		}) | (if ($grouping != "league") then ([
 		    (.[] | select((.variables.seq) == 1)) |
-		    (. |= {"title":"——  \(.variables.conference | gsub("\\B(?<i>[A-Z])";.i|ascii_downcase))  ——", "valid": false, "variables":.variables, "mods":.mods, "match":.variables.conference}) |
-			(.variables.seq |= 0)
+		    (. |= (.variables.conference) as $conference | {
+				"title":"—————  \(.variables.conference | gsub("\\B(?<i>[A-Z])";.i|ascii_downcase))  —————",
+				"icon":{"path":"images/iconLarge.png"},
+				"match":"\(.variables.conference) \($groupingSeqs | map(."\($conference)" | select(.)) | join(" "))",
+				"variables":.variables, "mods":.mods, "valid": false
+			}) | (.variables.seq |= 0) | (.variables.teamName |= "")
 		]+.) end)
 		| (if ($grouping == "conference") then sort_by(.variables.conference, .variables.seq) end)
 		| [(.[] | select((.variables.teamName|ascii_downcase) == $favTeam)) | (.match |= "")] + .
