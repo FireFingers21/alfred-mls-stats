@@ -1,18 +1,19 @@
 #!/bin/zsh --no-rcs
 
 # Get current/selected season
-seasons_file="${alfred_workflow_data}/seasons.json"
 [[ "$(date +%s)" -ge "$(date -jv 2m +%s)" ]] && seasonYear="$(date +%Y)" || seasonYear="$(($(date +%Y) - 1))"
-season="$(jq -r --argjson seasonYear "${seasonYear}" '.seasons[] | select(.season == $seasonYear) | .season_id' "${seasons_file}")"
+seasonDir="${alfred_workflow_data}/${seasonYear}"
 
 # Auto Update
-[[ -f "${alfred_workflow_data}/seasons.json" ]] && [[ "$(date -r "${alfred_workflow_data}/seasons.json" +%s)" -lt "$(date -v -"${autoUpdate}"M +%s)" || ! -d "${alfred_workflow_data}/${seasonYear}" ]] && reload=$(./reload.sh)
+set -o extendedglob
+[[ -f ${alfred_workflow_data}/*/*(#i)standings.json(#qNY1) ]] \
+&& [[ "$(date -r "${alfred_workflow_data}" +%s)" -lt "$(date -v -"${autoUpdate}"M +%s)" || ! -d "${alfred_workflow_data}/${seasonYear}" ]] && reload=$(./reload.sh)
 
 # Get season files
-standings_file="${alfred_workflow_data}/${seasonYear}/${grouping}Standings.json"
-conf_standings_file="${alfred_workflow_data}/${seasonYear}/conferenceStandings.json"
-stats_file="${alfred_workflow_data}/${seasonYear}/stats.json"
-icons_dir="${alfred_workflow_data}/${seasonYear}/icons"
+standings_file="${seasonDir}/${grouping}Standings.json"
+conf_standings_file="${seasonDir}/conferenceStandings.json"
+stats_file="${seasonDir}/stats.json"
+icons_dir="${seasonDir}/icons"
 
 # Load Standings
 jq -cs \
@@ -21,8 +22,6 @@ jq -cs \
    --arg grouping "${grouping}" \
 '{
     "variables": {
-        "seasons_file": "'${seasons_file}'",
-        "season": "'${season}'",
         "seasonYear": "'${seasonYear}'",
         "standings_file": "'${conf_standings_file}'",
         "stats_file": "'${stats_file}'",

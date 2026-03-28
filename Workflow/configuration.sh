@@ -1,7 +1,7 @@
 #!/bin/zsh --no-rcs
 
 # Get lastest cache timestamp
-readonly lastUpdated=$(date -r "${alfred_workflow_data}/seasons.json" +"%A, %B %d %Y at %I:%M%p" || printf "Never")
+readonly lastUpdated=$(date -r "${alfred_workflow_data}" +"%A, %B %d %Y at %I:%M%p" || printf "Never")
 
 cat << EOB
 {"items": [
