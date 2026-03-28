@@ -2,6 +2,8 @@
 
 View the latest MLS standings &amp; stats in Alfred
 
+[⤓ Install from the Alfred Gallery](https://alfred.app/workflows/firefingers21/mls-stats/)
+
 ## Setup
 
 This workflow requires [jq](https://jqlang.github.io/jq/) to function, which comes preinstalled on macOS 15 Sequoia and later.
