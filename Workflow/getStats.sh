@@ -71,13 +71,9 @@ map(.team_statistics + .tables[0].entries + .tables[1].entries) | flatten(1) | m
     "```"
 ' "${standings_file}" "${stats_file}" | sed 's/\"/\\"/g')
 else
-    lastUpdatedDate="$(date -r "${seasons_file}" +%Y-%m-%d)"
-    [[ -f "${seasons_file}" ]] && minutes="$((($(date +%s)-$(date -r "${seasons_file}" +%s))/60))"
-    mdOutput="![Team Logo](${icons_dir}/${teamAbbrev}small.png)
-# ${teamName}
-**Games Played:** N/A      ·      **Points:** N/A      ·      **Date**: ${lastUpdatedDate}
-***
-*No Team Stats available yet*"
+    lastUpdatedDate="$(date -r "${alfred_workflow_data}" +%Y-%m-%d)"
+    [[ -f "${alfred_workflow_data}" ]] && minutes="$((($(date +%s)-$(date -r "${alfred_workflow_data}" +%s))/60))"
+    mdOutput="![Team Logo](${icons_dir}/${teamAbbrev}small.png)\n# ${teamName}\n**Games Played:** N/A      ·      **Points:** N/A      ·      **Date**: ${lastUpdatedDate}\n***\n*No Team Stats available*"
 fi
 
 # Output Formatted Stats to Text View
