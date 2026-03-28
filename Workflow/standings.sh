@@ -39,6 +39,7 @@ jq -cs \
 			"text": { "copy": .club },
 			"variables": { "teamId":.team_id, "teamName":.club, "teamAbbrev":.team_three_letter_code, "points":.points, "seq":(.position + ((.subposition // 1) - 1)), "conference":$group },
 			"mods": {
+				"cmd": {"valid": false},
 				"alt": {"subtitle": "⌥↩ Sort by Conference", "arg": "", "variables": {"grouping":"conference"}},
 			    "ctrl": {"subtitle": "⌃↩ Sort by League", "arg": "", "variables": {"grouping":"league"}}
 			}
