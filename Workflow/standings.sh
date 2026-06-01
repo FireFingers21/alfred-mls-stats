@@ -18,7 +18,7 @@ icons_dir="${seasonDir}/icons"
 # Load Standings
 jq -cs \
    --arg icons_dir "${icons_dir}" \
-   --arg favTeam "${(L)favTeam}" \
+   --arg favTeam "$(iconv -f UTF-8-MAC -t UTF-8 <<< ${(L)favTeam})" \
    --arg grouping "${grouping}" \
 '{
     "variables": {
