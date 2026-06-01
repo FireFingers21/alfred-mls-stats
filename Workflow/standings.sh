@@ -35,7 +35,7 @@ jq -cs \
 			"subtitle": "Points: \(.points)    [ GP: \(.games_played)  W: \(.wins)  L: \(.losses)  T: \(.draws)      GF: \(.goals_scored)  GA: \(.goals_against)  GD: \(.goals_difference | (if . > 0 then "+"+(.|tostring) else . end)) ]",
 			"arg": "stats",
 			"match": "\(.position) \(.club) \($group) \(.team_short_name)",
-			"icon": { "path": "\($icons_dir)/\(.team_three_letter_code).svg" },
+			"icon": { "path": (if (.team_three_letter_code | IN("NYC", "MTL")) then "images/\(.team_three_letter_code).png" else "\($icons_dir)/\(.team_three_letter_code).svg" end)},
 			"text": { "copy": .club },
 			"variables": { "teamId":.team_id, "teamName":.club, "teamAbbrev":.team_three_letter_code, "points":.points, "seq":(.position + ((.subposition // 1) - 1)), "conference":$group },
 			"mods": {

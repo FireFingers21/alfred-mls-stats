@@ -31,7 +31,7 @@ if [[ -f "${stats_file}" ]]; then
 '(.[].team_statistics | select(length>0) | length) as $leagueCnt |
 map(.team_statistics + .tables[0].entries + .tables[1].entries) | flatten(1) | map(select(.team_id == $teamId)) | add |
 40 as $spaces |
-    "![Team Logo](\($icons_dir)/\(.three_letter_code)small.png)\n",
+    "![Team Logo](\(if (.team_three_letter_code | IN("NYC", "MTL")) then "images" else $icons_dir end)/\(.three_letter_code)small.png)\n",
     "# "+.team_name,
     "\n**Games Played:** \(.games_played)      ·      **Points:** \(.points)      ·      **Date:** \($lastUpdatedDate)",
     "\n***\n\n### General\n\n```",
