@@ -37,8 +37,7 @@ jq -cs \
 			    "ctrl": {"subtitle": "⌃↩ Sort by League", "arg": "", "variables": {"grouping":"league"}}
 			}
 		}) | (if ($grouping != "league") then ([
-		    (.[] | select((.variables.seq) == 1)) |
-		    (. |= (.variables.conference) as $conference | {
+		    (unique_by(.variables.conference)[] | select((.variables.seq) == 1)) | (. |= (.variables.conference) as $conference | {
 				"title":"—————  \(.variables.conference | gsub("\\B(?<i>[A-Z])";.i|ascii_downcase))  —————",
 				"icon":{"path":"images/iconLarge.png"},
 				"match":"\(.variables.conference) \($groupingSeqs | map(."\($conference)" | select(.)) | join(" "))",
