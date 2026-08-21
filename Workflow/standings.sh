@@ -24,7 +24,7 @@ jq -cs \
 	"items": (if (length != 0) then
 		(.[0].tables | map({(.group): .entries[].position})) as $groupingSeqs |
 		map(.tables[] | .group as $group | .entries[] | {
-			"title": "\(.position)  \(.club)  \(if ((.club|ascii_downcase) == $favTeam) then "★" else "" end)",
+			"title": "\(.position)  \(if (.tendency == "up") then "↑" elif (.tendency == "down") then "↓" else "↔" end)  \(.club)  \(if ((.club|ascii_downcase) == $favTeam) then "★" else "" end)",
 			"subtitle": "Points: \(.points)    [ GP: \(.games_played)  W: \(.wins)  L: \(.losses)  T: \(.draws)      GF: \(.goals_scored)  GA: \(.goals_against)  GD: \(.goals_difference | (if . > 0 then "+"+(.|tostring) else . end)) ]",
 			"arg": "stats",
 			"match": "\(.position) \(.club) \($group) \(.team_short_name)",
