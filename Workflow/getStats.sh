@@ -1,7 +1,9 @@
 #!/bin/zsh --no-rcs
 
-# Get age of stats_file in minutes
-[[ -f "${stats_file}" ]] && minutes="$((($(date +%s)-$(date -r "${stats_file}" +%s))/60))"
+# Get time since last reload in minutes
+stats_file="${alfred_workflow_data}/${seasonYear}/stats.json"
+standings_file="${alfred_workflow_data}/${seasonYear}/conferenceStandings.json"
+minutes="$((($(date +%s)-$(date -r "${alfred_workflow_data}" +%s))/60))"
 
 # Download Stats Data
 if [[ "${forceReload}" -eq 1 ]]; then
@@ -10,7 +12,7 @@ if [[ "${forceReload}" -eq 1 ]]; then
 fi
 
 # Format Last Updated Time
-if [[ ! -f "${stats_file}" || ${minutes} -eq 0 ]]; then
+if [[ ${minutes} -eq 0 ]]; then
     lastUpdated="Just now"
 elif [[ ${minutes} -eq 1 ]]; then
     lastUpdated="${minutes} minute ago"
@@ -21,7 +23,7 @@ elif [[ ${minutes} -ge 60 && ${minutes} -lt 120 ]]; then
 elif [[ ${minutes} -ge 120 && ${minutes} -lt 1440 ]]; then
     lastUpdated="$((${minutes}/60)) hours ago"
 else
-    lastUpdated="$(date -r "${stats_file}" +'%Y-%m-%d')"
+    lastUpdated="$(date -r "${alfred_workflow_data}" +'%Y-%m-%d')"
 fi
 
 # Format Stats to Markdown

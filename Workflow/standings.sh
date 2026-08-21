@@ -7,29 +7,22 @@ seasonDir="${alfred_workflow_data}/${seasonYear}"
 # Auto Update
 set -o extendedglob
 [[ -f ${alfred_workflow_data}/*/*(#i)standings.json(#qNY1) ]] \
-&& [[ "$(date -r "${alfred_workflow_data}" +%s)" -lt "$(date -v -"${autoUpdate}"M +%s)" || ! -d "${alfred_workflow_data}/${seasonYear}" ]] && reload=$(./reload.sh)
-
-# Get season files
-standings_file="${seasonDir}/${grouping}Standings.json"
-conf_standings_file="${seasonDir}/conferenceStandings.json"
-stats_file="${seasonDir}/stats.json"
-icons_dir="${seasonDir}/icons"
+&& [[ "$(date -r "${alfred_workflow_data}" +%s)" -lt "$(date -v -"${autoUpdate}"M +%s)" || ! -d "${seasonDir}" ]] && reload=$(./reload.sh)
 
 # Load Standings
 jq -cs \
-   --arg icons_dir "${icons_dir}" \
    --arg favTeam "$(iconv -f UTF-8-MAC -t UTF-8 <<< ${(L)favTeam})" \
    --arg grouping "${grouping}" \
+   --arg icons_dir "${seasonDir}/icons" \
+   --arg seasonYear "${seasonYear}" \
 '{
     "variables": {
-        "seasonYear": "'${seasonYear}'",
-        "standings_file": "'${conf_standings_file}'",
-        "stats_file": "'${stats_file}'",
-        "icons_dir": "'${icons_dir}'"
+        "icons_dir": $icons_dir,
+        "seasonYear": $seasonYear
     },
     "skipknowledge": true,
 	"items": (if (length != 0) then
-		(.[].tables | map({(.group): .entries[].position})) as $groupingSeqs |
+		(.[0].tables | map({(.group): .entries[].position})) as $groupingSeqs |
 		map(.tables[] | .group as $group | .entries[] | {
 			"title": "\(.position)  \(.club)  \(if ((.club|ascii_downcase) == $favTeam) then "★" else "" end)",
 			"subtitle": "Points: \(.points)    [ GP: \(.games_played)  W: \(.wins)  L: \(.losses)  T: \(.draws)      GF: \(.goals_scored)  GA: \(.goals_against)  GD: \(.goals_difference | (if . > 0 then "+"+(.|tostring) else . end)) ]",
@@ -61,4 +54,4 @@ jq -cs \
 			"arg": "reload"
 		}]
 	end)
-}' "${standings_file}"
+}' "${seasonDir}/${grouping}Standings.json"
